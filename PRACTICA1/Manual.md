@@ -20,16 +20,19 @@
 
 1. Transmisión en facebook
    - Abrir navegador y redireccionar a la página de facebook con el elemento de _abrir navegador_ y _Asociar navegador_.
+
 ![Alt text](image.png)
 
     - Seguir los pasos para compartir iniciar una transmisión en vivo en facebook, usando los elementos de _Click_ para cada opción.
     - Para ingresar el nombre de la transimisión se utiliza la una variable con el nombre "tituloLive" el cual tiene por nombre _UiPath201531166_.
     - Después se realizan agregan los pasos para realizar el proceso de consulta a las paginas repecticas.
     - Por último se finaliza la transimison con el elemento _Click_ en la opcion correspondiente en facebook.
+
 ![Alt text](image-2.png)
 
 2. Leer Datos de Excel
    Con el componente _Leer libro de fila_ se leen los datos siguientes:  _DPI_ y _fecha de nacimiento_ esto para poder realizar las consultas correspondientes, dichos datos se guarda en una variable de tipo objeto.
+
 ![Alt text](image-3.png)
 
 3. Consultar centro de votación
@@ -43,6 +46,7 @@
 4. Consultar Empadronamiento
    Luego de tener los datos correspondientes, se procede a consultar la información del empadronamiento con el elemento de navegador y siguiendo los pasos correspondientes para llegar a la consulta.
    - [TSE2] -Consulta de Empadronamiento 2023!
+  
 ![Alt text](image-6.png)
 ![Alt text](image-7.png)
    
@@ -54,7 +58,7 @@
   
 ![Alt text](image-9.png)
 
-5. Enviar correo
+1. Enviar correo
    Con el elemento _Utilizar Gmail_ se puede realizar el envio de un correo electronico, para esto es necesario asociar el correo electronico registrado en UiPath. 
    Esta opción permite agregar un destinatario, Asunto, Cuerpo del correo, y adjuntar archivos. Para esta práctica se adjuntaron los archivos correspondientes a cada consulta. 
 
