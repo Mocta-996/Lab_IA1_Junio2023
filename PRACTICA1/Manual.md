@@ -3,6 +3,8 @@
 ## Escuela de Ciencias y Sistemas
 ## Inteligencia Artificial 1
 ## Junio 2023
+### Ing. Luis Espino
+### Aux. Ana Culajay
 ### Maynor Octavio Piló Tuy
 ### 201531166
 ---
