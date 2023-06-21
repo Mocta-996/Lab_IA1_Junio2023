@@ -1321,7 +1321,7 @@ reporte9():-
     hotel(IDHOTEL, HOTNOMBRE, HOTDIRECCION, _, _, _, _, _, _),
     ESTADOCIVIL == 'Casado',
     REGESTADIA >= 3,
-    REGOPINION >= 6,
+    REGOPINION > 6,
     imprimirReporte9(HOTNOMBRE, HOTDIRECCION).
 
 imprimirReporte9(HOTNOMBRE, HOTDIRECCION) :-
