@@ -43,7 +43,7 @@ departamento(16,'Chimaltenango',3,'katchikel','calor',100).
 departamento(17,'Quetzaltenango',3,'ingles','frio',300).
 departamento(18,'El Progreso',4,'katchikel','calor',150).
 departamento(19,'Retalhuleu',4,'ingles','calor',200).
-departamento(20,'Solola',6,'Ketchi','frio',200).
+departamento(20,'Solola',6,'ketchi','frio',200).
 departamento(21,'Totonicapan',5,'ingles','templado',200).
 departamento(22,'Sacatepequez',2,'espanol','templado',100).
 
@@ -452,7 +452,7 @@ menuInicio :-
 % ------- VALIDAR OPCION MENU INICIO ------- %
 opcionMenuInicio(OPCION) :-
 (
-    OPCION == 1 -> menuPresupuesto;
+    OPCION == 1 -> menuPresupuesto();
     OPCION == 2 -> menuIdioma;
     OPCION == 3 -> menuEstrellas;
     OPCION == 4 -> menuClima;
@@ -464,11 +464,11 @@ opcionMenuInicio(OPCION) :-
 
 % ========================================== MENU PRESUPUESTO ========================================== 
 % ====================================================================================================== 
-menuPresupuesto :- 
+menuPresupuesto() :- 
 (   
-    write('==============================================='), nl,
-    write('|  Buscar por presupuesto                     |'), nl,
-    write('|---------------------------------------------|'), nl,
+    write('============================================================'), nl,
+    write('|                    Buscar por presupuesto                |'), nl,
+    write('============================================================'), nl,
     write('Ingrese su presupuesto'), nl,
     read(PRESUPUESTO), nl,    
     opcionesPresupuesto(PRESUPUESTO), nl
@@ -511,6 +511,7 @@ presupuestoBarato2(PRESUPUESTO, TRANSPORTE_MAX,ALIMENTACION_MAX,HOSPEDAJE_MAX,OP
     read(CANTIDAD_PERSONAS), nl,
     write('¿Cuantos dias desea hospedarse?:'), nl,
     read(DIAS), nl,
+
     resultadoBarato(PRESUPUESTO, TRANSPORTE_MAX,ALIMENTACION_MAX,HOSPEDAJE_MAX,OPINION,VEHICULO,TIPO_HABITACION,CANTIDAD_PERSONAS,DIAS)
 ).
 
@@ -547,7 +548,14 @@ resultadoBarato(PRESUPUESTO, TRANSPORTE_MAX,ALIMENTACION_MAX,HOSPEDAJE_MAX,OPINI
     write('Costo de hospedaje: '), write(HABITACION_COSTO), nl,
     write('Costo de alimentación: '), write(ALIMENTACION_COSTO), nl,
     write('Costo total: '), write(PRESUPUESTO_TOTAL), nl,
-    write('================================================================  '), nl
+    write('================================================================  '), nl,
+    write('¿Desea realizar otra busqueda? (s/n): '), nl,
+    read(OTRA_BUSQUEDA), nl,
+    (
+        OTRA_BUSQUEDA == 's' -> menuPresupuesto();
+        OTRA_BUSQUEDA == 'n' -> menuInicio()
+    )
+
 ).
 
 % ----- PRESUPUESTO MEDIO ----- %
@@ -563,7 +571,7 @@ presupuestoMedio(PRESUPUESTO) :-
     4. Tropical '), nl,
     read(CLIMA), nl,
     write('Ingrese la distancia maxima que desee recorrer hacia el hotel: '), nl,
-    read(DISTANCIA_MAX), nl
+    read(DISTANCIA_MAX), nl,
     presupuestoMedio2(PRESUPUESTO, CALIFICACION, CLIMA, DISTANCIA_MAX)
 ).
 
@@ -604,10 +612,10 @@ resultadoMedio(PRESUPUESTO,CALIFICACION,CLIMA,DISTANCIA_MAX,VEHICULO,TIPO_HABITA
     % restricciones
     PRESUPUESTO_TOTAL =< PRESUPUESTO,
     CALIFICACION =< M_OPINION,
-    CLIMA == 1 -> M_CLIMA == 'calor',
-    CLIMA == 2 -> M_CLIMA == 'frio',
-    CLIMA == 3 -> M_CLIMA == 'templado',
-    CLIMA == 4 -> M_CLIMA == 'tropical',
+    (CLIMA == 1 -> M_CLIMA == 'calor';
+    CLIMA == 2 -> M_CLIMA == 'frio';
+    CLIMA == 3 -> M_CLIMA == 'templado';
+    CLIMA == 4 -> M_CLIMA == 'tropical'),
     DISTANCIA_MAX =< M_DISTANCIA,
 
     % mostrar resultados
@@ -619,7 +627,13 @@ resultadoMedio(PRESUPUESTO,CALIFICACION,CLIMA,DISTANCIA_MAX,VEHICULO,TIPO_HABITA
     write('Costo de hospedaje: '), write(HABITACION_COSTO), nl,
     write('Costo de alimentación: '), write(ALIMENTACION_COSTO), nl,
     write('Costo total: '), write(PRESUPUESTO_TOTAL), nl,
-    write('================================================================  '), nl
+    write('================================================================  '), nl,
+    write('¿Desea realizar otra busqueda? (s/n): '), nl,
+    read(OTRA_BUSQUEDA), nl,
+    (
+        OTRA_BUSQUEDA == 's' -> menuPresupuesto();
+        OTRA_BUSQUEDA == 'n' -> menuInicio()
+    )
 ).
 
 % ----- PRESUPUESTO CARO ----- %
@@ -660,6 +674,7 @@ resultadoCaro(PRESUPUESTO,CALIFICACION,CLIMA,CHEF,VEHICULO,TIPO_HABITACION,CANTI
     hotel(M_IDHOTEL,M_NOMBRE, M_DIRECCION,M_ESTRELLAS,M_HSIMPLE, M_HDOBLE, M_COMIDA,M_DEPTO, M_DISTANCIA),
     departamento(M_IDDEPTO, M_DEPTONOMBRE, M_TIEMPOVIAJE, M_IDIOMA, M_CLIMA, M_PASAJE),
     trabajador(_,_, M_CARGO,M_IDHOTEL),
+    registro(_,_,_,_,_, M_OPINION),
     %realizar calculos
     (
         VEHICULO == 's' -> TRANSPORTE_COSTO is(M_DISTANCIA * 12.5 *2);  
@@ -674,10 +689,10 @@ resultadoCaro(PRESUPUESTO,CALIFICACION,CLIMA,CHEF,VEHICULO,TIPO_HABITACION,CANTI
     % restricciones
     PRESUPUESTO_TOTAL =< PRESUPUESTO,
     CALIFICACION =< M_OPINION,
-    CLIMA == 1 -> M_CLIMA == 'calor',
-    CLIMA == 2 -> M_CLIMA == 'frio',
-    CLIMA == 3 -> M_CLIMA == 'templado',
-    CLIMA == 4 -> M_CLIMA == 'tropical',
+    (CLIMA == 1 -> M_CLIMA == 'calor';
+    CLIMA == 2 -> M_CLIMA == 'frio';
+    CLIMA == 3 -> M_CLIMA == 'templado';
+    CLIMA == 4 -> M_CLIMA == 'tropical'),
     CHEF == 's' -> M_CARGO == 'Chef',
     % mostrar resultados
     write('========================== Resultados ==========================  '), nl,
@@ -688,7 +703,13 @@ resultadoCaro(PRESUPUESTO,CALIFICACION,CLIMA,CHEF,VEHICULO,TIPO_HABITACION,CANTI
     write('Costo de hospedaje: '), write(HABITACION_COSTO), nl,
     write('Costo de alimentación: '), write(ALIMENTACION_COSTO), nl,
     write('Costo total: '), write(PRESUPUESTO_TOTAL), nl,
-    write('================================================================  '), nl
+    write('================================================================  '), nl,
+    write('¿Desea realizar otra busqueda? (s/n): '), nl,
+    read(OTRA_BUSQUEDA), nl,
+    (
+        OTRA_BUSQUEDA == 's' -> menuPresupuesto();
+        OTRA_BUSQUEDA == 'n' -> menuInicio()
+    )
 ).
 
 % ========================================== MENU IDIOMA ========================================== 
@@ -728,10 +749,10 @@ idiomaLocal():-
 
 opcionesIdiomaLocal(R_IDIOMA_LOCAL) :-
 (
-    write('Ingrese una calificación minima para el hotel (1-5): '), nl,
+    write('Ingrese una calificación minima para el hotel (1-10): '), nl,
     read(CALIFICACION), nl,
     write('Ingrese la distancia maxima que desee recorrer hacia el hotel: '), nl,
-    read(DISTANCIA_MAX), nl
+    read(DISTANCIA_MAX), nl,
     write(' ¿LLevara vehículo ?  (s/n):'), nl,
     read(VEHICULO), nl,
     write(' Tipo de habitación (escribir el número):
@@ -745,7 +766,7 @@ opcionesIdiomaLocal(R_IDIOMA_LOCAL) :-
     resultadoIdiomaLocal(R_IDIOMA_LOCAL,CALIFICACION,DISTANCIA_MAX,VEHICULO,TIPO_HABITACION,CANTIDAD_PERSONAS,DIAS)
 ).
 
-resultadoIdiomaLocal(R_IDIOMA_LOCAL,CALIFICACION,DISTANCIA_MAX,VEHICULO,TIPO_HABITACION,CANTIDAD_PERSONAS,DIAS)
+resultadoIdiomaLocal(R_IDIOMA_LOCAL,CALIFICACION,DISTANCIA_MAX,VEHICULO,TIPO_HABITACION,CANTIDAD_PERSONAS,DIAS):-
 (
     % consultar HECHOS
     hotel(M_IDHOTEL,M_NOMBRE, M_DIRECCION,_,M_HSIMPLE, M_HDOBLE, M_COMIDA,M_DEPTO, M_DISTANCIA),
@@ -763,7 +784,9 @@ resultadoIdiomaLocal(R_IDIOMA_LOCAL,CALIFICACION,DISTANCIA_MAX,VEHICULO,TIPO_HAB
     ALIMENTACION_COSTO is (M_COMIDA * DIAS * CANTIDAD_PERSONAS),
     PRESUPUESTO_TOTAL is (TRANSPORTE_COSTO + HABITACION_COSTO + ALIMENTACION_COSTO),
     % restricciones
-    M_IDIOMA == R_IDIOMA_LOCAL,
+    (R_IDIOMA_LOCAL == 1 -> M_IDIOMA == 'espanol';
+    R_IDIOMA_LOCAL == 2 -> M_IDIOMA == 'katchikel';
+    R_IDIOMA_LOCAL == 3 -> M_IDIOMA == 'ketchi'),
     M_DISTANCIA =< DISTANCIA_MAX,
     CALIFICACION >= OPINION,
     % mostrar resultados
@@ -775,16 +798,22 @@ resultadoIdiomaLocal(R_IDIOMA_LOCAL,CALIFICACION,DISTANCIA_MAX,VEHICULO,TIPO_HAB
     write('Costo de hospedaje: '), write(HABITACION_COSTO), nl,
     write('Costo de alimentación: '), write(ALIMENTACION_COSTO), nl,
     write('Costo total: '), write(PRESUPUESTO_TOTAL), nl,
-    write('================================================================  '), nl
+    write('================================================================  '), nl,
+    write('¿Desea realizar otra busqueda? (s/n): '), nl,
+    read(OTRA_BUSQUEDA), nl,
+    (
+        OTRA_BUSQUEDA == 's' ->menuIdioma();
+        OTRA_BUSQUEDA == 'n' -> menuInicio()
+    )
 ).
 
 % ========================================== IDIOMA EXTRANJERO ==========================================
 idiomaExtranjero():-
 (
-    write('Ingrese una calificación minima para el hotel (1-5): '), nl,
+    write('Ingrese una calificación minima para el hotel (1-10): '), nl,
     read(CALIFICACION), nl,
     write('Ingrese la distancia maxima que desee recorrer hacia el hotel: '), nl,
-    read(DISTANCIA_MAX), nl
+    read(DISTANCIA_MAX), nl,
     write(' ¿LLevara vehículo ?  (s/n):'), nl,
     read(VEHICULO), nl,
     write(' Tipo de habitación (escribir el número):
@@ -798,11 +827,11 @@ idiomaExtranjero():-
     resultadoIdiomaExtranjero(CALIFICACION,DISTANCIA_MAX,VEHICULO,TIPO_HABITACION,CANTIDAD_PERSONAS,DIAS)
 ).
 
-resultadoIdiomaLocal(CALIFICACION,DISTANCIA_MAX,VEHICULO,TIPO_HABITACION,CANTIDAD_PERSONAS,DIAS)
+resultadoIdiomaExtranjero(CALIFICACION,DISTANCIA_MAX,VEHICULO,TIPO_HABITACION,CANTIDAD_PERSONAS,DIAS):-
 (
     % consultar HECHOS
     hotel(M_IDHOTEL,M_NOMBRE, M_DIRECCION,_,M_HSIMPLE, M_HDOBLE, M_COMIDA,M_DEPTO, M_DISTANCIA),
-    departamento(M_IDDEPTO, M_DEPTONOMBRE, M_TIEMPOVIAJE, _, _, M_PASAJE),
+    departamento(M_IDDEPTO, M_DEPTONOMBRE, M_TIEMPOVIAJE, M_IDIOMA, _, M_PASAJE),
     registro(_,_,M_IDHOTEL,_,_,OPINION),
     % realizar calculos
     (
@@ -818,6 +847,7 @@ resultadoIdiomaLocal(CALIFICACION,DISTANCIA_MAX,VEHICULO,TIPO_HABITACION,CANTIDA
     % restricciones
     M_DISTANCIA =< DISTANCIA_MAX,
     CALIFICACION >= OPINION,
+    M_IDIOMA == 'ingles',
     % mostrar resultados
     % write('========================== Resultados ==========================  '), nl,
     % write('Hotel: '), write(M_NOMBRE), nl,
@@ -828,7 +858,13 @@ resultadoIdiomaLocal(CALIFICACION,DISTANCIA_MAX,VEHICULO,TIPO_HABITACION,CANTIDA
     % write('Costo de alimentación: '), write(ALIMENTACION_COSTO), nl,
     % write('Costo total: '), write(PRESUPUESTO_TOTAL), nl,
     % write('================================================================  '), nl
-    imprimirPresupuesto(M_NOMBRE,M_DEPTONOMBRE,M_DIRECCION,TRANSPORTE_COSTO,HABITACION_COSTO,ALIMENTACION_COSTO,PRESUPUESTO_TOTAL)
+    imprimirPresupuesto(M_NOMBRE,M_DEPTONOMBRE,M_DIRECCION,TRANSPORTE_COSTO,HABITACION_COSTO,ALIMENTACION_COSTO,PRESUPUESTO_TOTAL),
+    write('¿Desea realizar otra busqueda? (s/n): '), nl,
+    read(OTRA_BUSQUEDA), nl,
+    (
+        OTRA_BUSQUEDA == 's' ->menuIdioma();
+        OTRA_BUSQUEDA == 'n' -> menuInicio()
+    )
 ).
 
 % ========================================== CANTIDAD DE ESTRELLAS ==========================================
@@ -839,8 +875,8 @@ menuEstrellas():-
     write('==============================================================='), nl,
     write(' Ingrese una calificación de estrellas minima para el hotel (1-5): '), nl,
     read(CALIFICACION), nl,
-    CALIFICACION < 4 -> hotelEconomico(CALIFICACION);
-    CALIFICACION >= 4 -> hotelCaro(CALIFICACION)
+    (CALIFICACION < 4 -> hotelEconomico(CALIFICACION);
+    CALIFICACION > 3 -> hotelCaro(CALIFICACION))
 ).
 
 hotelEconomico(CALIFICACION):-
@@ -877,10 +913,16 @@ resultadohotelEconomico(CALIFICACION,ALIMENTACION_MAX,VEHICULO,TIPO_HABITACION,C
     ALIMENTACION_COSTO is (M_COMIDA * DIAS * CANTIDAD_PERSONAS),
     PRESUPUESTO_TOTAL is (TRANSPORTE_COSTO + HABITACION_COSTO + ALIMENTACION_COSTO),
     % restricciones
-    M_ESTRELLAS =< 3,
+    M_ESTRELLAS == CALIFICACION,
     ALIMENTACION_COSTO =< ALIMENTACION_MAX,
     % mostrar resultados
-    imprimirPresupuesto(M_NOMBRE,M_DEPTONOMBRE,M_DIRECCION,TRANSPORTE_COSTO,HABITACION_COSTO,ALIMENTACION_COSTO,PRESUPUESTO_TOTAL)
+    imprimirPresupuesto(M_NOMBRE,M_DEPTONOMBRE,M_DIRECCION,TRANSPORTE_COSTO,HABITACION_COSTO,ALIMENTACION_COSTO,PRESUPUESTO_TOTAL),
+    write('¿Desea realizar otra busqueda? (s/n): '), nl,
+    read(OTRA_BUSQUEDA), nl,
+    (
+        OTRA_BUSQUEDA == 's' ->menuEstrellas();
+        OTRA_BUSQUEDA == 'n' -> menuInicio()
+    )
 
 
 ).
@@ -919,15 +961,21 @@ resultadoHotelCaro(CALIFICACION,TIEMPO_MAX,VEHICULO,TIPO_HABITACION,CANTIDAD_PER
     ALIMENTACION_COSTO is (M_COMIDA * DIAS * CANTIDAD_PERSONAS),
     PRESUPUESTO_TOTAL is (TRANSPORTE_COSTO + HABITACION_COSTO + ALIMENTACION_COSTO),
     % restricciones
-    M_ESTRELLAS >= 4,
+    M_ESTRELLAS == CALIFICACION,
     M_TIEMPOVIAJE =< TIEMPO_MAX,
     % mostrar resultados
-    imprimirPresupuesto(M_NOMBRE,M_DEPTONOMBRE,M_DIRECCION,TRANSPORTE_COSTO,HABITACION_COSTO,ALIMENTACION_COSTO,PRESUPUESTO_TOTAL)
+    imprimirPresupuesto(M_NOMBRE,M_DEPTONOMBRE,M_DIRECCION,TRANSPORTE_COSTO,HABITACION_COSTO,ALIMENTACION_COSTO,PRESUPUESTO_TOTAL),
+    write('¿Desea realizar otra busqueda? (s/n): '), nl,
+    read(OTRA_BUSQUEDA), nl,
+    (
+        OTRA_BUSQUEDA == 's' ->menuEstrellas();
+        OTRA_BUSQUEDA == 'n' -> menuInicio()
+    )
 ).
 
 
-% ========================================== CANTIDAD DE ESTRELLAS ==========================================
-menuEstrellas():-
+% ========================================== CLIMA ==========================================
+menuClima():-
 (
     write('==============================================================='), nl,
     write('|                            CLIMA                            |'), nl,
@@ -935,55 +983,66 @@ menuEstrellas():-
     write(' Ingrese un tipo de clima: '), nl,
     write(' 1. Frío'), nl,
     write(' 2. Calido'), nl,
+    write(' 3. templado'), nl,
+    write(' 4. tropical'), nl,
     read(CLIMA), nl,
-    CLIMA == 1 -> hotelFrio();
-    CLIMA == 2 -> hotelCalido()
+    (CLIMA == 1 -> hotelFrio(CLIMA);
+    CLIMA == 2 -> hotelCalido(CLIMA);
+    CLIMA == 3 -> hotelFrio(CLIMA);
+    CLIMA == 4 -> hotelCalido(CLIMA))
 
 ).
 
-hotelFrio():-
-(
-    write('Ingrese una calificación máxima para el viaje: '), nl,
-    read(OPINION_MAX), nl,
-    write(' ¿LLevara vehículo ?  (s/n):'), nl,
-    read(VEHICULO), nl,
-    write(' Tipo de habitación (escribir el número):
-    1. Simple
-    2. Doble'), nl,
-    read(TIPO_HABITACION), nl,
-    write('Cantidad de personas: '), nl,
-    read(CANTIDAD_PERSONAS), nl,
-    write('¿Cuantos dias desea hospedarse?:'), nl,
-    read(DIAS), nl,
-    resultadoHotelFrio(OPINION_MAX,VEHICULO,TIPO_HABITACION,CANTIDAD_PERSONAS,DIAS)
-).
-
-resultadoHotelFrio(OPINION_MAX,VEHICULO,TIPO_HABITACION,CANTIDAD_PERSONAS,DIAS):-
-(
-    % consultar HECHOS
-    hotel(M_IDHOTEL,M_NOMBRE, M_DIRECCION,M_ESTRELLAS,M_HSIMPLE, M_HDOBLE, M_COMIDA,M_DEPTO, M_DISTANCIA),
-    departamento(M_IDDEPTO, M_DEPTONOMBRE, M_TIEMPOVIAJE, M_CLIMA, _, M_PASAJE),
-    registro(_,_,M_IDHOTEL,_,_,OPINION),
-
-    % realizar calculos
+hotelFrio(CLIMA):-
     (
-        VEHICULO == 's' -> TRANSPORTE_COSTO is(M_DISTANCIA * 12.5 *2);  
-        VEHICULO == 'n' -> TRANSPORTE_COSTO is(M_PASAJE * 2*CANTIDAD_PERSONAS) 
-    ),
-    (
-        TIPO_HABITACION == 1 -> HABITACION_COSTO is (M_HSIMPLE * DIAS * CANTIDAD_PERSONAS);
-        TIPO_HABITACION == 2 -> HABITACION_COSTO is (M_HDOBLE * DIAS * CANTIDAD_PERSONAS)
-    ),
-    ALIMENTACION_COSTO is (M_COMIDA * DIAS * CANTIDAD_PERSONAS),
-    PRESUPUESTO_TOTAL is (TRANSPORTE_COSTO + HABITACION_COSTO + ALIMENTACION_COSTO),
-    % restricciones
-    (M_CLIMA == 'frio'; M_CLIMA == 'templado'),
-    OPINION =< OPINION_MAX,
-    % mostrar resultados
-    imprimirPresupuesto(M_NOMBRE,M_DEPTONOMBRE,M_DIRECCION,TRANSPORTE_COSTO,HABITACION_COSTO,ALIMENTACION_COSTO,PRESUPUESTO_TOTAL)
-).
+        write('Ingrese una calificación máxima para el viaje: '), nl,
+        read(OPINION_MAX), nl,
+        write(' ¿LLevara vehículo ?  (s/n):'), nl,
+        read(VEHICULO), nl,
+        write(' Tipo de habitación (escribir el número):
+        1. Simple
+        2. Doble'), nl,
+        read(TIPO_HABITACION), nl,
+        write('Cantidad de personas: '), nl,
+        read(CANTIDAD_PERSONAS), nl,
+        write('¿Cuantos dias desea hospedarse?:'), nl,
+        read(DIAS), nl,
+        resultadoHotelFrio(CLIMA,OPINION_MAX,VEHICULO,TIPO_HABITACION,CANTIDAD_PERSONAS,DIAS)
+    ).
 
-hotelCalido():-
+resultadoHotelFrio(CLIMA,OPINION_MAX,VEHICULO,TIPO_HABITACION,CANTIDAD_PERSONAS,DIAS):-
+    (
+        % consultar HECHOS
+        hotel(M_IDHOTEL,M_NOMBRE, M_DIRECCION,M_ESTRELLAS,M_HSIMPLE, M_HDOBLE, M_COMIDA,M_DEPTO, M_DISTANCIA),
+        departamento(_, M_DEPTONOMBRE, _,_, M_CLIMA,M_PASAJE),
+        registro(_,_,M_IDHOTEL,_,_,OPINION),
+
+        % realizar calculos
+        (
+            VEHICULO == 's' -> TRANSPORTE_COSTO is(M_DISTANCIA * 12.5 *2);  
+            VEHICULO == 'n' -> TRANSPORTE_COSTO is(M_PASAJE * 2*CANTIDAD_PERSONAS) 
+        ),
+        (
+            TIPO_HABITACION == 1 -> HABITACION_COSTO is (M_HSIMPLE * DIAS * CANTIDAD_PERSONAS);
+            TIPO_HABITACION == 2 -> HABITACION_COSTO is (M_HDOBLE * DIAS * CANTIDAD_PERSONAS)
+        ),
+        ALIMENTACION_COSTO is (M_COMIDA * DIAS * CANTIDAD_PERSONAS),
+        PRESUPUESTO_TOTAL is (TRANSPORTE_COSTO + HABITACION_COSTO + ALIMENTACION_COSTO),
+        % restricciones
+        (CLIMA == 1 -> M_CLIMA == 'frio'; 
+        CLIMA == 3 -> M_CLIMA == 'templado'),
+        OPINION =< OPINION_MAX,
+        % mostrar resultados
+        imprimirPresupuesto(M_NOMBRE,M_DEPTONOMBRE,M_DIRECCION,TRANSPORTE_COSTO,HABITACION_COSTO,ALIMENTACION_COSTO,PRESUPUESTO_TOTAL),
+        write('¿Desea realizar otra busqueda? (s/n): '), nl,
+        read(OTRA_BUSQUEDA), nl,
+        (
+            OTRA_BUSQUEDA == 's' ->menuClima();
+            OTRA_BUSQUEDA == 'n' -> menuInicio()
+        )
+    ).
+
+hotelCalido(CLIMA):-
 (
     write('Ingrese una distancia máxima para el viaje: '), nl,
     read(DISTANCIA_MAX), nl,
@@ -997,15 +1056,15 @@ hotelCalido():-
     read(CANTIDAD_PERSONAS), nl,
     write('¿Cuantos dias desea hospedarse?:'), nl,
     read(DIAS), nl,
-    resultadoHotelCalido(DISTANCIA_MAX,VEHICULO,TIPO_HABITACION,CANTIDAD_PERSONAS,DIAS)
+    resultadoHotelCalido(CLIMA,DISTANCIA_MAX,VEHICULO,TIPO_HABITACION,CANTIDAD_PERSONAS,DIAS)
 
 ).
 
-resultadoHotelCalido(DISTANCIA_MAX,VEHICULO,TIPO_HABITACION,CANTIDAD_PERSONAS,DIAS):-
+resultadoHotelCalido(CLIMA,DISTANCIA_MAX,VEHICULO,TIPO_HABITACION,CANTIDAD_PERSONAS,DIAS):-
 (
     % consultar HECHOS
     hotel(M_IDHOTEL,M_NOMBRE, M_DIRECCION,_,M_HSIMPLE, M_HDOBLE, M_COMIDA,M_DEPTO, M_DISTANCIA),
-    departamento(_, M_DEPTONOMBRE, _, M_CLIMA, _, M_PASAJE),
+    departamento(_, M_DEPTONOMBRE, _,_, M_CLIMA,M_PASAJE),
     % realizar calculos
     (
         VEHICULO == 's' -> TRANSPORTE_COSTO is(M_DISTANCIA * 12.5 *2);  
@@ -1018,10 +1077,17 @@ resultadoHotelCalido(DISTANCIA_MAX,VEHICULO,TIPO_HABITACION,CANTIDAD_PERSONAS,DI
     ALIMENTACION_COSTO is (M_COMIDA * DIAS * CANTIDAD_PERSONAS),
     PRESUPUESTO_TOTAL is (TRANSPORTE_COSTO + HABITACION_COSTO + ALIMENTACION_COSTO),
     % restricciones
-    (M_CLIMA == 'calor'; M_CLIMA == 'tropical'),
+    (CLIMA == 2 -> M_CLIMA == 'calor'; 
+    CLIMA == 4 -> M_CLIMA == 'tropical'),
     M_DISTANCIA =< DISTANCIA_MAX,
     % mostrar resultados
-    imprimirPresupuesto(M_NOMBRE,M_DEPTONOMBRE,M_DIRECCION,TRANSPORTE_COSTO,HABITACION_COSTO,ALIMENTACION_COSTO,PRESUPUESTO_TOTAL)
+    imprimirPresupuesto(M_NOMBRE,M_DEPTONOMBRE,M_DIRECCION,TRANSPORTE_COSTO,HABITACION_COSTO,ALIMENTACION_COSTO,PRESUPUESTO_TOTAL),
+    write('¿Desea realizar otra busqueda? (s/n): '), nl,
+    read(OTRA_BUSQUEDA), nl,
+    (
+        OTRA_BUSQUEDA == 's' ->menuClima();
+        OTRA_BUSQUEDA == 'n' -> menuInicio()
+    )
 
 ).
 
@@ -1039,7 +1105,7 @@ imprimirPresupuesto(NOMBRE,DEPARTAMENTO,DIRECCION,TRANSPORTE_COSTO,HABITACION_CO
     Costo de alimentación:  ~a
     Costo total:            ~a
     ================================================================', 
-    [NOMBRE,DEPARTAMENTO,DIRECCION,TRANSPORTE_COSTO,HABITACION_COSTO,ALIMENTACION_COSTO,PRESUPUESTO_TOTAL]),nl,fail
+    [NOMBRE,DEPARTAMENTO,DIRECCION,TRANSPORTE_COSTO,HABITACION_COSTO,ALIMENTACION_COSTO,PRESUPUESTO_TOTAL]),nl
 ).
 
 % ====================================   MENU DE REPORTES ========================== %
